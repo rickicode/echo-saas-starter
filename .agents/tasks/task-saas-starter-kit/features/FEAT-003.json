@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Users Plugin + Plans Plugin - User management (CRUD, profile, avatar, search/filter/pagination) and Subscription plans (plan CRUD, assignment, feature gating middleware)",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Create internal/plugins/users/plugin.go: Implement Plugin interface. Name()='users'. Register admin routes (protected by RequireRole) and user routes (protected by RequireAuth).",
     "Create internal/plugins/users/models.go: UserProfile struct (UserID, Bio, Location, Website, Phone, Timezone, Language, NotificationPrefs JSON). ListUsersParams (Search, RoleFilter, StatusFilter, Page, PerPage). PaginatedResponse.",

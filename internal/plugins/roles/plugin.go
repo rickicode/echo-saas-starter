@@ -37,6 +37,7 @@ func (p *Plugin) RegisterRoutes(g *echo.Group) {
 	authMiddleware := auth.RequireAuth(p.authPlugin.GetRepository(), p.authPlugin.GetSecret())
 	adminMiddleware := RequireRole(p.repo, "super_admin", "admin")
 
+	g.GET("/me", p.handlers.GetMyRolesHandler, authMiddleware)
 	g.GET("", p.handlers.ListRoles, authMiddleware)
 	g.POST("/:id/assign", p.handlers.AssignRoleHandler, authMiddleware, adminMiddleware)
 	g.DELETE("/:id/users/:user_id", p.handlers.RemoveRoleHandler, authMiddleware, adminMiddleware)

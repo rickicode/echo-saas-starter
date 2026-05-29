@@ -47,7 +47,10 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("DATABASE_URL is required")
 	}
 
-	if cfg.PasetoSecret != "" && len(cfg.PasetoSecret) < 32 {
+	if cfg.PasetoSecret == "" {
+		return nil, fmt.Errorf("PASETO_SECRET is required")
+	}
+	if len(cfg.PasetoSecret) < 32 {
 		return nil, fmt.Errorf("PASETO_SECRET must be at least 32 bytes long")
 	}
 

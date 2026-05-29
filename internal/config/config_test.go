@@ -39,7 +39,11 @@ func TestLoad_WithEnvVars(t *testing.T) {
 
 func TestLoad_Defaults(t *testing.T) {
 	os.Setenv("DATABASE_URL", "sqlite://test.db")
-	defer os.Unsetenv("DATABASE_URL")
+	os.Setenv("PASETO_SECRET", "my-secret-key-that-is-at-least-32-bytes-long")
+	defer func() {
+		os.Unsetenv("DATABASE_URL")
+		os.Unsetenv("PASETO_SECRET")
+	}()
 
 	cfg, err := Load()
 	if err != nil {
@@ -59,10 +63,22 @@ func TestLoad_Defaults(t *testing.T) {
 
 func TestLoad_MissingDatabaseURL(t *testing.T) {
 	os.Unsetenv("DATABASE_URL")
+	os.Unsetenv("PASETO_SECRET")
 
 	_, err := Load()
 	if err == nil {
 		t.Fatal("expected error when DATABASE_URL is empty")
+	}
+}
+
+func TestLoad_MissingPasetoSecret(t *testing.T) {
+	os.Setenv("DATABASE_URL", "sqlite://test.db")
+	os.Unsetenv("PASETO_SECRET")
+	defer os.Unsetenv("DATABASE_URL")
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected error when PASETO_SECRET is empty")
 	}
 }
 

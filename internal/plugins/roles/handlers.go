@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"echo-saas-starter/internal/plugins/auth"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -133,4 +135,42 @@ func (h *Handlers) GetUserRolesHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, roles)
+}
+
+// myRoleEntry is the response shape for the /me endpoint.
+type myRoleEntry struct {
+	RoleID   int    `json:"role_id"`
+	RoleName string `json:"role_name"`
+}
+
+// GetMyRolesHandler returns the authenticated user's roles.
+func (h *Handlers) GetMyRolesHandler(c echo.Context) error {
+	user := auth.GetUserFromContext(c)
+	if user == nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": map[string]interface{}{
+				"code":    "ROLE_040",
+				"message": "Authentication required",
+			},
+		})
+	}
+
+	roles, err := h.repo.GetUserRoles(c.Request().Context(), user.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": map[string]interface{}{
+				"code":    "ROLE_041",
+				"message": "Failed to fetch user roles",
+			},
+		})
+	}
+
+	entries := make([]myRoleEntry, len(roles))
+	for i, r := range roles {
+		entries[i] = myRoleEntry{RoleID: r.ID, RoleName: r.Name}
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"roles": entries,
+	})
 }

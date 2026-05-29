@@ -1,6 +1,9 @@
 # Binaries
 bin/
 *.exe
+*.dll
+*.so
+*.dylib
 
 # Environment
 .env
@@ -15,6 +18,7 @@ Thumbs.db
 
 # Go
 vendor/
+tmp/
 
 # Frontend
 ui/node_modules/
@@ -22,3 +26,6 @@ ui/dist/
 
 # Data
 data/
+
+# Uploads
+uploads/

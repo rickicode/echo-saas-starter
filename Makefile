@@ -1,8 +1,7 @@
-.PHONY: build run test dev lint clean
+.PHONY: build run test dev lint clean docker-build docker-run docker-up docker-down frontend-build frontend-dev
 
 # Build backend and frontend
-build:
-	cd ui && npm run build
+build: frontend-build
 	go build -o bin/server ./cmd/server
 
 # Run the server
@@ -11,8 +10,7 @@ run:
 
 # Run all tests
 test:
-	go test ./...
-	cd ui && npm run test
+	go test ./... -v
 
 # Run development servers concurrently
 dev:
@@ -25,9 +23,27 @@ dev:
 # Run linters
 lint:
 	go vet ./...
-	cd ui && npm run lint
 
 # Clean build artifacts
 clean:
-	rm -rf bin/
-	rm -rf ui/dist
+	rm -rf bin/ ui/dist
+
+# Docker commands
+docker-build:
+	docker build -t echo-saas-starter .
+
+docker-run:
+	docker run -p 8080:8080 echo-saas-starter
+
+docker-up:
+	docker-compose up -d
+
+docker-down:
+	docker-compose down
+
+# Frontend commands
+frontend-build:
+	cd ui && npm run build
+
+frontend-dev:
+	cd ui && npm run dev

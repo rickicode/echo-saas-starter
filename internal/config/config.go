@@ -25,6 +25,8 @@ func Load() (*Config, error) {
 	v.SetDefault("SERVER_HOST", "0.0.0.0")
 	v.SetDefault("LOG_LEVEL", "info")
 	v.SetDefault("CORS_ORIGINS", "*")
+	v.SetDefault("DATABASE_URL", "")
+	v.SetDefault("PASETO_SECRET", "")
 
 	// Environment variables
 	v.AutomaticEnv()

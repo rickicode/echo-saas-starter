@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Auth Plugin (PASETO v4) + Roles Plugin (RBAC) - Authentication with access/refresh tokens, registration/login/logout, and role-based access control with Super Admin/Admin/User roles",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Create internal/plugins/auth/plugin.go: Implement Plugin interface. Name()='auth', register routes under /auth group. Init stores config and db reference. Migrate creates users and refresh_tokens tables.",
     "Create internal/plugins/auth/models.go: User struct (ID uuid, Email, PasswordHash, Name, Avatar, CreatedAt, UpdatedAt, LastSeenAt, IsActive bool). RefreshToken struct (ID uuid, UserID, Token string, ExpiresAt, CreatedAt). Request/Response DTOs: RegisterRequest, LoginRequest, AuthResponse (with access_token, refresh_token, user).",
@@ -51,5 +51,5 @@
     "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All verification commands pass: go build ./..., go vet ./..., npx tsc --noEmit, npm run build. Used npx @tanstack/router-cli generate to regenerate routeTree.gen.ts after adding new routes. The PASETO library (aidanwoods.dev/go-paseto v1.6.0) was added via go get. React 19 uses the new Context API with value prop instead of Provider/Consumer pattern. The AuthProvider uses createContext + useContext pattern. TanStack Router file-based routing with _guest prefix creates a layout route for unauthenticated pages."
 }

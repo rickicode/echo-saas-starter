@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Core Foundation - Go backend with Echo, plugin system architecture, configuration, database abstraction, middleware, go:embed, and frontend project initialization with TanStack Router + shadcn/ui + Tailwind CSS",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Initialize Go module at /projects/sandbox/echo-saas-starter with 'go mod init echo-saas-starter'. Add dependencies: github.com/labstack/echo/v4, github.com/jackc/pgx/v5, modernc.org/sqlite, aidanwoods.dev/go-paseto, golang.org/x/crypto (for argon2id), github.com/spf13/viper, github.com/golang-migrate/migrate/v4, github.com/google/uuid.",
     "Create internal/core/plugin.go: Define the Plugin interface with methods Name() string, Version() string, Init(cfg *config.Config, db database.DB) error, RegisterRoutes(g *echo.Group), Migrate(db database.DB) error, Shutdown() error. Define optional hook interfaces: StartupHook (OnStartup()), MiddlewareHook (OnMiddleware(*echo.Echo)).",
@@ -46,5 +46,5 @@
     "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All verification commands pass: go build ./..., go vet ./..., npx tsc --noEmit, npm run build. TypeScript 6 has deprecated baseUrl/paths (TS5101 error) so path aliases are not used - import directly with relative paths. TanStack Router file-based routing generates routeTree.gen.ts automatically during vite build. Tailwind CSS v4 uses CSS-based configuration (@import 'tailwindcss') instead of tailwind.config.ts. The embed placeholder at internal/embed/dist/index.html ensures Go builds without the full frontend dist."
 }

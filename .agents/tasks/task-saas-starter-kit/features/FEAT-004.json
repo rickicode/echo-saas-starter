@@ -1,0 +1,51 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Docs CMS Plugin + Guest Pages + Admin Dashboard + User Dashboard - Complete frontend and backend for content management, public pages, and both dashboard layouts",
+  "status": "pending",
+  "steps": [
+    "Create internal/plugins/docs/plugin.go: Implement Plugin interface. Name()='docs'. Register admin routes (CRUD) and public routes (read-only).",
+    "Create internal/plugins/docs/models.go: Post struct (ID, Title, Slug, ContentMD, ContentHTML, Excerpt, Status enum draft/published, CategoryID, AuthorID, PublishedAt, CreatedAt, UpdatedAt). Category struct (ID, Name, Slug, Description). Tag struct (ID, Name, Slug). PostTag struct (PostID, TagID).",
+    "Create internal/plugins/docs/repository.go: Post CRUD (create, get by ID, get by slug, list with filters, update, delete, publish, unpublish), Category CRUD, Tag CRUD, PostTag associations, full-text search, pagination.",
+    "Create internal/plugins/docs/handlers.go: Admin - GET/POST/PUT/DELETE /posts, POST /posts/:id/publish, POST /posts/:id/unpublish, GET/POST/PUT/DELETE /categories, GET/POST/DELETE /tags. Public - GET /docs (list published), GET /docs/:slug (by slug), GET /docs/search?q= (search).",
+    "Create internal/plugins/docs/markdown.go: Markdown to HTML conversion using goldmark with syntax highlighting extension (github.com/yuin/goldmark, github.com/yuin/goldmark-highlighting).",
+    "Create internal/plugins/docs/migrations/: 001_create_categories.up.sql, 002_create_posts.up.sql, 003_create_tags.up.sql, 004_create_post_tags.up.sql. All with down migrations.",
+    "Create internal/plugins/docs/migrate.go: Embed and execute migrations.",
+    "Update internal/plugins/registry.go to register docs plugin.",
+    "Create ui/src/plugins/docs/api.ts: API functions for post CRUD, category/tag CRUD, public docs listing/detail/search.",
+    "Create ui/src/plugins/docs/types.ts: TypeScript types for Post, Category, Tag, search params.",
+    "Create ui/src/routes/_guest/index.tsx: Landing page - hero section (headline, subheadline, CTA button), features grid (6 cards with icons from lucide-react), brief testimonials section, footer.",
+    "Create ui/src/routes/_guest/pricing.tsx: Pricing page - plan comparison cards fetched from /api/v1/plans/available. Show name, price, features list, CTA. Highlight Pro plan.",
+    "Create ui/src/routes/_guest/docs/index.tsx: Docs listing - card grid of published posts from /api/v1/docs. Search input, category filter.",
+    "Create ui/src/routes/_guest/docs/$slug.tsx: Doc detail - rendered HTML content, table of contents from headings, back navigation.",
+    "Create ui/src/routes/_admin.tsx: Admin layout - sidebar navigation (Dashboard, Users, Roles, Plans, Content, Settings), top bar with user info and logout. Protected by role check (redirect if not admin).",
+    "Create ui/src/routes/_admin/index.tsx: Admin overview - stats cards (total users, active plans, published docs), recent activity list, quick action buttons.",
+    "Create ui/src/routes/_admin/roles.tsx: Role management - list roles with user count.",
+    "Create ui/src/routes/_admin/content.tsx: Content management - post list table with status filter, create/edit functionality with markdown textarea, category/tag selection.",
+    "Create ui/src/routes/_admin/settings.tsx: Admin settings page - site configuration form.",
+    "Create ui/src/routes/_dashboard.tsx: User dashboard layout - simpler navigation (Overview, Profile, Subscription, Settings), user avatar and name, logout.",
+    "Create ui/src/routes/_dashboard/index.tsx: User overview - welcome message, subscription status card, quick links.",
+    "Add Go dependencies: github.com/yuin/goldmark, github.com/yuin/goldmark-highlighting/v2 (or appropriate highlighting package).",
+    "Ensure go build ./... passes, go vet ./... passes, cd ui && npx tsc --noEmit passes, cd ui && npm run build passes."
+  ],
+  "acceptance_criteria": [
+    "go build ./... exits with code 0",
+    "go vet ./... exits with code 0",
+    "cd ui && npx tsc --noEmit exits with code 0",
+    "cd ui && npm run build exits with code 0",
+    "Docs plugin registers CRUD + public endpoints",
+    "Markdown rendering with syntax highlighting works",
+    "Guest pages (landing, pricing, docs) compile and render",
+    "Admin dashboard layout with sidebar navigation compiles",
+    "User dashboard layout compiles",
+    "All routes are properly typed with TanStack Router"
+  ],
+  "verification": [
+    "cd /projects/sandbox/echo-saas-starter && go build ./...",
+    "cd /projects/sandbox/echo-saas-starter && go vet ./...",
+    "cd /projects/sandbox/echo-saas-starter/ui && npx tsc --noEmit",
+    "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

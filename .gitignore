@@ -1,0 +1,24 @@
+# Binaries
+bin/
+*.exe
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+vendor/
+
+# Frontend
+ui/node_modules/
+ui/dist/
+
+# Data
+data/

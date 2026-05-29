@@ -1,0 +1,7 @@
+{
+  "task_id": "task-saas-starter-kit",
+  "task_description": "Build a complete, modular, plugin-based SaaS starter kit with Go/Echo backend, React/TanStack frontend, dual database support (PostgreSQL + SQLite), PASETO auth, RBAC, and multiple feature plugins (users, plans, docs CMS, dashboards)",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null
+}

@@ -12,17 +12,23 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as GuestRouteImport } from './routes/_guest'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as GuestIndexRouteImport } from './routes/_guest/index'
 import { Route as DashboardSubscriptionRouteImport } from './routes/dashboard/subscription'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminRolesRouteImport } from './routes/admin/roles'
 import { Route as AdminPlansRouteImport } from './routes/admin/plans'
+import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as GuestRegisterRouteImport } from './routes/_guest/register'
+import { Route as GuestPricingRouteImport } from './routes/_guest/pricing'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
+import { Route as GuestDocsIndexRouteImport } from './routes/_guest/docs/index'
 import { Route as AdminUsersIdRouteImport } from './routes/admin/users_.$id'
+import { Route as GuestDocsSlugRouteImport } from './routes/_guest/docs/$slug'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -38,11 +44,6 @@ const GuestRoute = GuestRouteImport.update({
   id: '/_guest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -52,6 +53,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const GuestIndexRoute = GuestIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GuestRoute,
 } as any)
 const DashboardSubscriptionRoute = DashboardSubscriptionRouteImport.update({
   id: '/subscription',
@@ -73,9 +79,24 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPlansRoute = AdminPlansRouteImport.update({
   id: '/plans',
   path: '/plans',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/content',
+  path: '/content',
   getParentRoute: () => AdminRoute,
 } as any)
 const GuestRegisterRoute = GuestRegisterRouteImport.update({
@@ -83,9 +104,19 @@ const GuestRegisterRoute = GuestRegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => GuestRoute,
 } as any)
+const GuestPricingRoute = GuestPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => GuestRoute,
+} as any)
 const GuestLoginRoute = GuestLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => GuestRoute,
+} as any)
+const GuestDocsIndexRoute = GuestDocsIndexRouteImport.update({
+  id: '/docs/',
+  path: '/docs/',
   getParentRoute: () => GuestRoute,
 } as any)
 const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
@@ -93,51 +124,74 @@ const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
   path: '/users/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const GuestDocsSlugRoute = GuestDocsSlugRouteImport.update({
+  id: '/docs/$slug',
+  path: '/docs/$slug',
+  getParentRoute: () => GuestRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof GuestIndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof GuestLoginRoute
+  '/pricing': typeof GuestPricingRoute
   '/register': typeof GuestRegisterRoute
+  '/admin/content': typeof AdminContentRoute
   '/admin/plans': typeof AdminPlansRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscription': typeof DashboardSubscriptionRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/docs/$slug': typeof GuestDocsSlugRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
+  '/docs/': typeof GuestDocsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/login': typeof GuestLoginRoute
+  '/pricing': typeof GuestPricingRoute
   '/register': typeof GuestRegisterRoute
+  '/admin/content': typeof AdminContentRoute
   '/admin/plans': typeof AdminPlansRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscription': typeof DashboardSubscriptionRoute
+  '/': typeof GuestIndexRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/docs/$slug': typeof GuestDocsSlugRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
+  '/docs': typeof GuestDocsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_guest': typeof GuestRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/_guest/login': typeof GuestLoginRoute
+  '/_guest/pricing': typeof GuestPricingRoute
   '/_guest/register': typeof GuestRegisterRoute
+  '/admin/content': typeof AdminContentRoute
   '/admin/plans': typeof AdminPlansRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscription': typeof DashboardSubscriptionRoute
+  '/_guest/': typeof GuestIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/_guest/docs/$slug': typeof GuestDocsSlugRoute
   '/admin/users_/$id': typeof AdminUsersIdRoute
+  '/_guest/docs/': typeof GuestDocsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -146,48 +200,65 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/pricing'
     | '/register'
+    | '/admin/content'
     | '/admin/plans'
+    | '/admin/roles'
+    | '/admin/settings'
     | '/admin/users'
     | '/dashboard/profile'
     | '/dashboard/settings'
     | '/dashboard/subscription'
     | '/admin/'
     | '/dashboard/'
+    | '/docs/$slug'
     | '/admin/users/$id'
+    | '/docs/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/login'
+    | '/pricing'
     | '/register'
+    | '/admin/content'
     | '/admin/plans'
+    | '/admin/roles'
+    | '/admin/settings'
     | '/admin/users'
     | '/dashboard/profile'
     | '/dashboard/settings'
     | '/dashboard/subscription'
+    | '/'
     | '/admin'
     | '/dashboard'
+    | '/docs/$slug'
     | '/admin/users/$id'
+    | '/docs'
   id:
     | '__root__'
-    | '/'
     | '/_guest'
     | '/admin'
     | '/dashboard'
     | '/_guest/login'
+    | '/_guest/pricing'
     | '/_guest/register'
+    | '/admin/content'
     | '/admin/plans'
+    | '/admin/roles'
+    | '/admin/settings'
     | '/admin/users'
     | '/dashboard/profile'
     | '/dashboard/settings'
     | '/dashboard/subscription'
+    | '/_guest/'
     | '/admin/'
     | '/dashboard/'
+    | '/_guest/docs/$slug'
     | '/admin/users_/$id'
+    | '/_guest/docs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   GuestRoute: typeof GuestRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
@@ -216,13 +287,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -236,6 +300,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/_guest/': {
+      id: '/_guest/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof GuestIndexRouteImport
+      parentRoute: typeof GuestRoute
     }
     '/dashboard/subscription': {
       id: '/dashboard/subscription'
@@ -265,11 +336,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/plans': {
       id: '/admin/plans'
       path: '/plans'
       fullPath: '/admin/plans'
       preLoaderRoute: typeof AdminPlansRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_guest/register': {
@@ -279,11 +371,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRegisterRouteImport
       parentRoute: typeof GuestRoute
     }
+    '/_guest/pricing': {
+      id: '/_guest/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof GuestPricingRouteImport
+      parentRoute: typeof GuestRoute
+    }
     '/_guest/login': {
       id: '/_guest/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof GuestLoginRouteImport
+      parentRoute: typeof GuestRoute
+    }
+    '/_guest/docs/': {
+      id: '/_guest/docs/'
+      path: '/docs'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof GuestDocsIndexRouteImport
       parentRoute: typeof GuestRoute
     }
     '/admin/users_/$id': {
@@ -293,30 +399,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_guest/docs/$slug': {
+      id: '/_guest/docs/$slug'
+      path: '/docs/$slug'
+      fullPath: '/docs/$slug'
+      preLoaderRoute: typeof GuestDocsSlugRouteImport
+      parentRoute: typeof GuestRoute
+    }
   }
 }
 
 interface GuestRouteChildren {
   GuestLoginRoute: typeof GuestLoginRoute
+  GuestPricingRoute: typeof GuestPricingRoute
   GuestRegisterRoute: typeof GuestRegisterRoute
+  GuestIndexRoute: typeof GuestIndexRoute
+  GuestDocsSlugRoute: typeof GuestDocsSlugRoute
+  GuestDocsIndexRoute: typeof GuestDocsIndexRoute
 }
 
 const GuestRouteChildren: GuestRouteChildren = {
   GuestLoginRoute: GuestLoginRoute,
+  GuestPricingRoute: GuestPricingRoute,
   GuestRegisterRoute: GuestRegisterRoute,
+  GuestIndexRoute: GuestIndexRoute,
+  GuestDocsSlugRoute: GuestDocsSlugRoute,
+  GuestDocsIndexRoute: GuestDocsIndexRoute,
 }
 
 const GuestRouteWithChildren = GuestRoute._addFileChildren(GuestRouteChildren)
 
 interface AdminRouteChildren {
+  AdminContentRoute: typeof AdminContentRoute
   AdminPlansRoute: typeof AdminPlansRoute
+  AdminRolesRoute: typeof AdminRolesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminUsersIdRoute: typeof AdminUsersIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminContentRoute: AdminContentRoute,
   AdminPlansRoute: AdminPlansRoute,
+  AdminRolesRoute: AdminRolesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminUsersIdRoute: AdminUsersIdRoute,
@@ -343,7 +470,6 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   GuestRoute: GuestRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,

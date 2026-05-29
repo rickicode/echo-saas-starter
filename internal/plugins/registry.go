@@ -3,6 +3,7 @@ package plugins
 import (
 	"echo-saas-starter/internal/core"
 	"echo-saas-starter/internal/plugins/auth"
+	"echo-saas-starter/internal/plugins/docs"
 	"echo-saas-starter/internal/plugins/plans"
 	"echo-saas-starter/internal/plugins/roles"
 	"echo-saas-starter/internal/plugins/users"
@@ -17,4 +18,5 @@ func RegisterAll(pm *core.PluginManager) {
 	pm.Register(rolesPlugin)
 	pm.Register(users.NewPlugin(authPlugin, rolesPlugin))
 	pm.Register(plans.NewPlugin(authPlugin, rolesPlugin))
+	pm.Register(docs.NewPlugin(authPlugin, rolesPlugin))
 }

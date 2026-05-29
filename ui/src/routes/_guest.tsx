@@ -14,6 +14,18 @@ function GuestLayout() {
           </Link>
           <div className="flex items-center gap-4">
             <Link
+              to="/docs"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              Docs
+            </Link>
+            <Link
+              to="/pricing"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              Pricing
+            </Link>
+            <Link
               to="/login"
               className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >

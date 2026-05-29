@@ -18,6 +18,9 @@ function AdminLayout() {
           <NavLink to="/admin">Dashboard</NavLink>
           <NavLink to="/admin/users">Users</NavLink>
           <NavLink to="/admin/plans">Plans</NavLink>
+          <NavLink to="/admin/content">Content</NavLink>
+          <NavLink to="/admin/roles">Roles</NavLink>
+          <NavLink to="/admin/settings">Settings</NavLink>
         </nav>
       </aside>
       <div className="flex-1 flex flex-col">

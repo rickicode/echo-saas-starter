@@ -1,3 +1,6 @@
+-- NOTE: This migration uses SQLite-compatible syntax.
+-- For PostgreSQL, replace AUTOINCREMENT with SERIAL or GENERATED ALWAYS AS IDENTITY,
+-- and replace INSERT OR IGNORE with INSERT ... ON CONFLICT DO NOTHING.
 CREATE TABLE IF NOT EXISTS plans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,

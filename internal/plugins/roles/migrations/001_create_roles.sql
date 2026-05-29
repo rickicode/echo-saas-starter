@@ -1,3 +1,5 @@
+-- NOTE: This migration uses SQLite-compatible syntax.
+-- For PostgreSQL, replace INSERT OR IGNORE with INSERT ... ON CONFLICT DO NOTHING.
 CREATE TABLE IF NOT EXISTS roles (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,

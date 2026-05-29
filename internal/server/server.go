@@ -51,6 +51,9 @@ func (s *Server) Start() error {
 		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
 	})
 
+	// Serve uploaded files (avatars, etc.)
+	e.Static("/uploads", "./uploads")
+
 	// Serve embedded SPA for non-API routes
 	e.GET("/*", embed.SPAHandler())
 

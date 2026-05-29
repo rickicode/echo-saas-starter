@@ -65,3 +65,17 @@ func TestLoad_MissingDatabaseURL(t *testing.T) {
 		t.Fatal("expected error when DATABASE_URL is empty")
 	}
 }
+
+func TestLoad_ShortPasetoSecret(t *testing.T) {
+	os.Setenv("DATABASE_URL", "sqlite://test.db")
+	os.Setenv("PASETO_SECRET", "short-secret")
+	defer func() {
+		os.Unsetenv("DATABASE_URL")
+		os.Unsetenv("PASETO_SECRET")
+	}()
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected error when PASETO_SECRET is too short")
+	}
+}

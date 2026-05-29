@@ -2,6 +2,7 @@ package users
 
 import (
 	"crypto/rand"
+	"crypto/subtle"
 	"echo-saas-starter/internal/plugins/auth"
 	"encoding/hex"
 	"fmt"
@@ -137,6 +138,24 @@ func (h *Handlers) UploadAvatar(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errorResponse("USR_014", "No file uploaded"))
 	}
 
+	// Validate file size (max 5MB)
+	const maxFileSize = 5 * 1024 * 1024
+	if file.Size > maxFileSize {
+		return c.JSON(http.StatusBadRequest, errorResponse("USR_030", "File size exceeds 5MB limit"))
+	}
+
+	// Validate content type
+	allowedTypes := map[string]bool{
+		"image/jpeg": true,
+		"image/png":  true,
+		"image/gif":  true,
+		"image/webp": true,
+	}
+	contentType := file.Header.Get("Content-Type")
+	if !allowedTypes[contentType] {
+		return c.JSON(http.StatusBadRequest, errorResponse("USR_031", "Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed"))
+	}
+
 	src, err := file.Open()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse("USR_015", "Failed to read file"))
@@ -149,7 +168,14 @@ func (h *Handlers) UploadAvatar(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, errorResponse("USR_016", "Failed to create upload directory"))
 	}
 
-	ext := filepath.Ext(file.Filename)
+	// Map content type to extension for safety (ignore user-provided extension)
+	extMap := map[string]string{
+		"image/jpeg": ".jpg",
+		"image/png":  ".png",
+		"image/gif":  ".gif",
+		"image/webp": ".webp",
+	}
+	ext := extMap[contentType]
 	filename := fmt.Sprintf("%s%s", user.ID, ext)
 	dstPath := filepath.Join(uploadDir, filename)
 
@@ -248,13 +274,6 @@ func verifyPassword(password, storedHash string) bool {
 		return false
 	}
 	hash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
-	if len(hash) != len(expectedHash) {
-		return false
-	}
-	for i := range hash {
-		if hash[i] != expectedHash[i] {
-			return false
-		}
-	}
-	return true
+
+	return subtle.ConstantTimeCompare(hash, expectedHash) == 1
 }

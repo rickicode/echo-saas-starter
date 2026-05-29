@@ -61,12 +61,12 @@ func NewPostgresDB(databaseURL string) (core.DB, error) {
 }
 
 func (db *PostgresDB) Exec(ctx context.Context, query string, args ...interface{}) error {
-	_, err := db.pool.Exec(ctx, query, args...)
+	_, err := db.pool.Exec(ctx, RewritePlaceholders(query), args...)
 	return err
 }
 
 func (db *PostgresDB) Query(ctx context.Context, query string, args ...interface{}) (core.Rows, error) {
-	rows, err := db.pool.Query(ctx, query, args...)
+	rows, err := db.pool.Query(ctx, RewritePlaceholders(query), args...)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func (db *PostgresDB) Query(ctx context.Context, query string, args ...interface
 }
 
 func (db *PostgresDB) QueryRow(ctx context.Context, query string, args ...interface{}) core.Row {
-	row := db.pool.QueryRow(ctx, query, args...)
+	row := db.pool.QueryRow(ctx, RewritePlaceholders(query), args...)
 	return &pgxRow{row: row}
 }
 

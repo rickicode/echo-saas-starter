@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/rand"
+	"crypto/subtle"
 	"encoding/hex"
 	"net/http"
 	"strings"
@@ -270,13 +271,5 @@ func verifyPassword(password, storedHash string) bool {
 
 	hash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
 
-	if len(hash) != len(expectedHash) {
-		return false
-	}
-	for i := range hash {
-		if hash[i] != expectedHash[i] {
-			return false
-		}
-	}
-	return true
+	return subtle.ConstantTimeCompare(hash, expectedHash) == 1
 }

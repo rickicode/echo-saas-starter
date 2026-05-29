@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "feat",
   "description": "Docs CMS Plugin + Guest Pages + Admin Dashboard + User Dashboard - Complete frontend and backend for content management, public pages, and both dashboard layouts",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Create internal/plugins/docs/plugin.go: Implement Plugin interface. Name()='docs'. Register admin routes (CRUD) and public routes (read-only).",
     "Create internal/plugins/docs/models.go: Post struct (ID, Title, Slug, ContentMD, ContentHTML, Excerpt, Status enum draft/published, CategoryID, AuthorID, PublishedAt, CreatedAt, UpdatedAt). Category struct (ID, Name, Slug, Description). Tag struct (ID, Name, Slug). PostTag struct (PostID, TagID).",
@@ -47,5 +47,5 @@
     "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Successfully implemented docs CMS plugin backend (models, repository, handlers, migrations, markdown rendering with goldmark), frontend docs plugin (types, API), guest pages (landing, pricing, docs listing, docs detail), and admin pages (content management, roles, settings). Updated admin layout nav and guest layout nav. Removed root index.tsx in favor of _guest/index.tsx to avoid route conflicts. TanStack Router route tree regenerated via vite build. All verification commands pass."
 }

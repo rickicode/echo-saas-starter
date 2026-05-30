@@ -14,8 +14,11 @@ function DocsIndexPage() {
 
   useEffect(() => {
     setLoading(true)
-    const fn = search ? searchPosts(search) : listPublishedPosts(1, 20)
-    fn.then(setData).catch(() => setData(null)).finally(() => setLoading(false))
+    const timer = setTimeout(() => {
+      const fn = search ? searchPosts(search) : listPublishedPosts(1, 20)
+      fn.then(setData).catch(() => setData(null)).finally(() => setLoading(false))
+    }, 300)
+    return () => clearTimeout(timer)
   }, [search])
 
   return (

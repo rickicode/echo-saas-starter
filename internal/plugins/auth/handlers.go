@@ -203,6 +203,10 @@ func (h *Handlers) Refresh(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, errorResponse("AUTH_044", "User not found"))
 	}
 
+	if !user.IsActive {
+		return c.JSON(http.StatusForbidden, errorResponse("AUTH_047", "Account is deactivated"))
+	}
+
 	now := time.Now().UTC()
 	accessToken, err := GenerateAccessToken(user.ID, h.secret, accessTokenExpiry)
 	if err != nil {

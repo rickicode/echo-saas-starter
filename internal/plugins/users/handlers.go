@@ -179,6 +179,12 @@ func (h *Handlers) UploadAvatar(c echo.Context) error {
 	filename := fmt.Sprintf("%s%s", user.ID, ext)
 	dstPath := filepath.Join(uploadDir, filename)
 
+	// Remove old avatar file if it exists
+	if user.Avatar != "" {
+		oldPath := "." + user.Avatar
+		os.Remove(oldPath) // ignore error - file might not exist
+	}
+
 	dst, err := os.Create(dstPath)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse("USR_017", "Failed to save file"))

@@ -93,3 +93,8 @@ func (r *Repository) DeleteRefreshToken(ctx context.Context, token string) error
 func (r *Repository) DeleteUserRefreshTokens(ctx context.Context, userID string) error {
 	return r.db.Exec(ctx, `DELETE FROM refresh_tokens WHERE user_id = ?`, userID)
 }
+
+// DeleteExpiredTokens removes expired refresh tokens for a user.
+func (r *Repository) DeleteExpiredTokens(ctx context.Context, userID string) error {
+	return r.db.Exec(ctx, `DELETE FROM refresh_tokens WHERE user_id = ? AND expires_at < ?`, userID, time.Now().UTC())
+}

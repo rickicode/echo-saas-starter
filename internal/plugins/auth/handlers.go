@@ -93,6 +93,9 @@ func (h *Handlers) Register(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, errorResponse("AUTH_017", "Failed to store refresh token"))
 	}
 
+	// Clean up expired refresh tokens for this user
+	_ = h.repo.DeleteExpiredTokens(c.Request().Context(), user.ID)
+
 	return c.JSON(http.StatusCreated, AuthResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -145,6 +148,9 @@ func (h *Handlers) Login(c echo.Context) error {
 	if err := h.repo.CreateRefreshToken(c.Request().Context(), rt); err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse("AUTH_025", "Failed to store refresh token"))
 	}
+
+	// Clean up expired refresh tokens for this user
+	_ = h.repo.DeleteExpiredTokens(c.Request().Context(), user.ID)
 
 	return c.JSON(http.StatusOK, AuthResponse{
 		AccessToken:  accessToken,

@@ -185,3 +185,29 @@ func (r *Repository) GetPasswordHash(ctx context.Context, userID string) (string
 	}
 	return hash, nil
 }
+
+// StatsResponse contains basic user statistics.
+type StatsResponse struct {
+	TotalUsers  int `json:"total_users"`
+	ActiveUsers int `json:"active_users"`
+}
+
+// GetStats returns basic user count statistics.
+func (r *Repository) GetStats(ctx context.Context) (*StatsResponse, error) {
+	row := r.db.QueryRow(ctx, `SELECT COUNT(*) FROM users`)
+	var total int
+	if err := row.Scan(&total); err != nil {
+		return nil, err
+	}
+
+	row = r.db.QueryRow(ctx, `SELECT COUNT(*) FROM users WHERE is_active = 1`)
+	var active int
+	if err := row.Scan(&active); err != nil {
+		return nil, err
+	}
+
+	return &StatsResponse{
+		TotalUsers:  total,
+		ActiveUsers: active,
+	}, nil
+}

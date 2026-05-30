@@ -240,6 +240,15 @@ func (h *Handlers) ChangePassword(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "Password changed"})
 }
 
+// GetStats handles GET /users/stats - returns basic user counts.
+func (h *Handlers) GetStats(c echo.Context) error {
+	stats, err := h.repo.GetStats(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errorResponse("USR_040", "Failed to get stats"))
+	}
+	return c.JSON(http.StatusOK, stats)
+}
+
 func errorResponse(code, message string) map[string]interface{} {
 	return map[string]interface{}{
 		"error": map[string]interface{}{

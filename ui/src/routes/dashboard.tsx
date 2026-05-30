@@ -1,10 +1,30 @@
 import { createFileRoute, Outlet, Link } from '@tanstack/react-router'
+import { useAuth } from '../plugins/auth/store'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardLayout,
 })
 
 function DashboardLayout() {
+  const { isAuthenticated, isLoading } = useAuth()
+
+  if (isLoading) {
+    return null
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-muted-foreground mb-4">Please log in to access your dashboard.</p>
+          <Link to="/" className="text-sm font-medium underline">
+            Go to Home
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex">
       <aside className="w-64 border-r bg-muted/30 p-4">

@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, Link } from '@tanstack/react-router'
+import { RequireRole } from '../plugins/roles/RequireRole'
 
 export const Route = createFileRoute('/admin')({
   component: AdminLayout,
@@ -6,32 +7,34 @@ export const Route = createFileRoute('/admin')({
 
 function AdminLayout() {
   return (
-    <div className="min-h-screen flex">
-      <aside className="w-64 border-r bg-muted/30 p-4">
-        <div className="mb-8">
-          <Link to="/" className="text-xl font-bold">
-            Echo SaaS
-          </Link>
-          <p className="text-xs text-muted-foreground mt-1">Admin Panel</p>
+    <RequireRole roles={['super_admin', 'admin']}>
+      <div className="min-h-screen flex">
+        <aside className="w-64 border-r bg-muted/30 p-4">
+          <div className="mb-8">
+            <Link to="/" className="text-xl font-bold">
+              Echo SaaS
+            </Link>
+            <p className="text-xs text-muted-foreground mt-1">Admin Panel</p>
+          </div>
+          <nav className="space-y-1">
+            <NavLink to="/admin">Dashboard</NavLink>
+            <NavLink to="/admin/users">Users</NavLink>
+            <NavLink to="/admin/plans">Plans</NavLink>
+            <NavLink to="/admin/content">Content</NavLink>
+            <NavLink to="/admin/roles">Roles</NavLink>
+            <NavLink to="/admin/settings">Settings</NavLink>
+          </nav>
+        </aside>
+        <div className="flex-1 flex flex-col">
+          <header className="border-b h-14 flex items-center px-6">
+            <h2 className="text-sm font-medium text-muted-foreground">Administration</h2>
+          </header>
+          <main className="flex-1 p-6">
+            <Outlet />
+          </main>
         </div>
-        <nav className="space-y-1">
-          <NavLink to="/admin">Dashboard</NavLink>
-          <NavLink to="/admin/users">Users</NavLink>
-          <NavLink to="/admin/plans">Plans</NavLink>
-          <NavLink to="/admin/content">Content</NavLink>
-          <NavLink to="/admin/roles">Roles</NavLink>
-          <NavLink to="/admin/settings">Settings</NavLink>
-        </nav>
-      </aside>
-      <div className="flex-1 flex flex-col">
-        <header className="border-b h-14 flex items-center px-6">
-          <h2 className="text-sm font-medium text-muted-foreground">Administration</h2>
-        </header>
-        <main className="flex-1 p-6">
-          <Outlet />
-        </main>
       </div>
-    </div>
+    </RequireRole>
   )
 }
 

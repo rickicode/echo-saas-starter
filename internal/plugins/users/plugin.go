@@ -47,6 +47,7 @@ func (p *Plugin) RegisterRoutes(g *echo.Group) {
 
 	// Admin routes
 	g.GET("", p.handlers.ListUsers, authMiddleware, adminMiddleware)
+	g.GET("/stats", p.handlers.GetStats, authMiddleware, adminMiddleware)
 	g.GET("/:id", p.handlers.GetUser, authMiddleware, adminMiddleware)
 	g.PUT("/:id", p.handlers.UpdateUser, authMiddleware, adminMiddleware)
 	g.DELETE("/:id", p.handlers.DeleteUser, authMiddleware, adminMiddleware)

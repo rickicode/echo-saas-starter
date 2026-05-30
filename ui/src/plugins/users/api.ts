@@ -8,8 +8,6 @@ import type {
   ChangePasswordRequest,
 } from './types'
 
-const BASE_URL = '/api/v1'
-
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem('access_token')
   if (token) {
@@ -52,7 +50,7 @@ export function updateMyProfile(data: UpdateProfileRequest): Promise<{ message: 
 export async function uploadAvatar(file: File): Promise<{ avatar: string }> {
   const formData = new FormData()
   formData.append('avatar', file)
-  const response = await fetch(`${BASE_URL}/users/me/avatar`, {
+  const response = await fetch('/api/v1/users/me/avatar', {
     method: 'POST',
     headers: getAuthHeaders(),
     body: formData,

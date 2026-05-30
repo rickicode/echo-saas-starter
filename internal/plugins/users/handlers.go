@@ -75,6 +75,9 @@ func (h *Handlers) UpdateUser(c echo.Context) error {
 	}
 
 	if err := h.repo.UpdateUser(c.Request().Context(), id, req); err != nil {
+		if strings.Contains(err.Error(), "UNIQUE") || strings.Contains(err.Error(), "unique") || strings.Contains(err.Error(), "duplicate") {
+			return c.JSON(http.StatusConflict, errorResponse("USR_007", "Email already in use"))
+		}
 		return c.JSON(http.StatusInternalServerError, errorResponse("USR_004", "Failed to update user"))
 	}
 
@@ -84,6 +87,13 @@ func (h *Handlers) UpdateUser(c echo.Context) error {
 // DeleteUser handles DELETE /users/:id (soft delete).
 func (h *Handlers) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
+
+	// Prevent admin from deactivating themselves
+	currentUser := auth.GetUserFromContext(c)
+	if currentUser != nil && currentUser.ID == id {
+		return c.JSON(http.StatusBadRequest, errorResponse("USR_006", "Cannot deactivate your own account"))
+	}
+
 	if err := h.repo.SoftDeleteUser(c.Request().Context(), id); err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse("USR_005", "Failed to delete user"))
 	}

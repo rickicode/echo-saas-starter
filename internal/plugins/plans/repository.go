@@ -3,6 +3,7 @@ package plans
 import (
 	"context"
 	"echo-saas-starter/internal/core"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -108,7 +109,9 @@ func (r *Repository) DeletePlan(ctx context.Context, id int) error {
 // AssignPlanToUser assigns a plan to a user, deactivating any current plan.
 func (r *Repository) AssignPlanToUser(ctx context.Context, userID string, planID int) error {
 	// Deactivate current plans
-	_ = r.db.Exec(ctx, `UPDATE user_plans SET status = 'cancelled' WHERE user_id = ? AND status = 'active'`, userID)
+	if err := r.db.Exec(ctx, `UPDATE user_plans SET status = 'cancelled' WHERE user_id = ? AND status = 'active'`, userID); err != nil {
+		return fmt.Errorf("failed to deactivate current plans: %w", err)
+	}
 
 	id := uuid.New().String()
 	now := time.Now().UTC()

@@ -144,7 +144,9 @@ func (h *Handlers) UpdatePost(c echo.Context) error {
 	if req.Excerpt != "" {
 		post.Excerpt = req.Excerpt
 	}
-	post.CategoryID = req.CategoryID
+	if req.CategoryID != nil {
+		post.CategoryID = req.CategoryID
+	}
 	post.UpdatedAt = time.Now().UTC()
 
 	if err := h.repo.UpdatePost(c.Request().Context(), post); err != nil {

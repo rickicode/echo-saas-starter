@@ -74,7 +74,7 @@ func (h *Handlers) Register(c echo.Context) error {
 
 	// Assign default "user" role (role_id=3)
 	_ = h.repo.db.Exec(c.Request().Context(),
-		`INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)`, user.ID, 3)
+		`INSERT INTO user_roles (user_id, role_id) VALUES (?, ?) ON CONFLICT DO NOTHING`, user.ID, 3)
 
 	accessToken, err := GenerateAccessToken(user.ID, h.secret, accessTokenExpiry)
 	if err != nil {

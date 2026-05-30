@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT NOT NULL,
     name TEXT NOT NULL DEFAULT '',
     avatar TEXT DEFAULT '',
-    is_active BOOLEAN DEFAULT TRUE,
+    is_active INTEGER DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_seen_at TIMESTAMP

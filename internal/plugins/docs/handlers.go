@@ -91,10 +91,11 @@ func (h *Handlers) CreatePost(c echo.Context) error {
 	}
 
 	now := time.Now().UTC()
+	postID := GenerateID()
 	post := &Post{
-		ID:          GenerateID(),
+		ID:          postID,
 		Title:       req.Title,
-		Slug:        generateSlug(req.Title),
+		Slug:        generateSlug(req.Title) + "-" + postID[:8],
 		ContentMD:   req.ContentMD,
 		ContentHTML: RenderMarkdown(req.ContentMD),
 		Excerpt:     req.Excerpt,

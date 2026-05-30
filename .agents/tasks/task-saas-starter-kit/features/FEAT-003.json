@@ -1,0 +1,51 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Users Plugin + Plans Plugin - User management (CRUD, profile, avatar, search/filter/pagination) and Subscription plans (plan CRUD, assignment, feature gating middleware)",
+  "status": "completed",
+  "steps": [
+    "Create internal/plugins/users/plugin.go: Implement Plugin interface. Name()='users'. Register admin routes (protected by RequireRole) and user routes (protected by RequireAuth).",
+    "Create internal/plugins/users/models.go: UserProfile struct (UserID, Bio, Location, Website, Phone, Timezone, Language, NotificationPrefs JSON). ListUsersParams (Search, RoleFilter, StatusFilter, Page, PerPage). PaginatedResponse.",
+    "Create internal/plugins/users/repository.go: GetUsers (with search, filter, pagination), GetUserByID, CreateUser, UpdateUser, SoftDeleteUser, UpdateLastSeen, GetUserProfile, UpdateUserProfile, UpdateAvatar.",
+    "Create internal/plugins/users/handlers.go: Admin endpoints - GET /users (list with query params: search, role, status, page, per_page), GET /users/:id, POST /users, PUT /users/:id, DELETE /users/:id (soft delete). User endpoints - GET /users/me (profile), PUT /users/me, POST /users/me/avatar (multipart form upload), PUT /users/me/password.",
+    "Create internal/plugins/users/migrations/: 001_create_user_profiles.up.sql (user_profiles table 1:1 with users), down.sql.",
+    "Create internal/plugins/users/migrate.go: Embed and execute migrations.",
+    "Create internal/plugins/plans/plugin.go: Implement Plugin interface. Name()='plans'. Register admin routes and public/user routes.",
+    "Create internal/plugins/plans/models.go: Plan struct (ID, Name, Slug, Description, PriceMonthly, PriceYearly float64, Features []string as JSON, IsActive bool, CreatedAt, UpdatedAt). UserPlan struct (UserID, PlanID, Status, StartsAt, ExpiresAt, CreatedAt).",
+    "Create internal/plugins/plans/repository.go: CRUD for plans, GetActivePlans, AssignPlanToUser, GetUserActivePlan, GetPlanBySlug.",
+    "Create internal/plugins/plans/handlers.go: Admin - GET /plans, GET /plans/:id, POST /plans, PUT /plans/:id, DELETE /plans/:id, POST /plans/:id/assign (body: {user_id}). User - GET /plans/current, GET /plans/available.",
+    "Create internal/plugins/plans/middleware.go: RequirePlan(slugs ...string) echo.MiddlewareFunc - check user's active plan slug against allowed list. Return 403 if not authorized.",
+    "Create internal/plugins/plans/migrations/: 001_create_plans.up.sql (plans table with seed data: Free/Pro/Enterprise), 002_create_user_plans.up.sql (user_plans table). Both with down migrations.",
+    "Create internal/plugins/plans/migrate.go: Embed and execute migrations.",
+    "Update internal/plugins/registry.go to register users and plans plugins.",
+    "Create ui/src/plugins/users/api.ts: API functions for admin user CRUD, profile management, avatar upload.",
+    "Create ui/src/plugins/users/types.ts: TypeScript types for User, UserProfile, ListUsersParams, PaginatedResponse.",
+    "Create ui/src/plugins/plans/api.ts: API functions for plan CRUD, current plan, available plans.",
+    "Create ui/src/plugins/plans/types.ts: TypeScript types for Plan, UserPlan.",
+    "Create ui/src/routes/_admin/users.tsx: Admin user management page - data table with search, filters, pagination, row actions.",
+    "Create ui/src/routes/_admin/users.$id.tsx: Admin user detail page - profile card, role/plan assignment.",
+    "Create ui/src/routes/_dashboard/profile.tsx: User profile edit form with avatar upload.",
+    "Create ui/src/routes/_dashboard/settings.tsx: User settings - change password, notification prefs, delete account.",
+    "Create ui/src/routes/_dashboard/subscription.tsx: Current plan display, upgrade options.",
+    "Create ui/src/routes/_admin/plans.tsx: Admin plan management - table, create/edit dialog.",
+    "Ensure go build ./... passes, go vet ./... passes, cd ui && npx tsc --noEmit passes, cd ui && npm run build passes."
+  ],
+  "acceptance_criteria": [
+    "go build ./... exits with code 0",
+    "go vet ./... exits with code 0",
+    "cd ui && npx tsc --noEmit exits with code 0",
+    "cd ui && npm run build exits with code 0",
+    "Users plugin registers admin CRUD + user profile endpoints",
+    "Plans plugin registers admin CRUD + user endpoints + RequirePlan middleware",
+    "Seed data creates Free/Pro/Enterprise plans",
+    "Frontend pages for user management, profile, plans all compile cleanly"
+  ],
+  "verification": [
+    "cd /projects/sandbox/echo-saas-starter && go build ./...",
+    "cd /projects/sandbox/echo-saas-starter && go vet ./...",
+    "cd /projects/sandbox/echo-saas-starter/ui && npx tsc --noEmit",
+    "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
+  ],
+  "blocked_reason": null,
+  "findings": "Used path-based routes (admin/, dashboard/) instead of pathless layout routes (_admin, _dashboard) to avoid TanStack Router path conflicts with the root index. The users_.$id.tsx file uses underscore separator pattern for nested params under a non-layout parent. Route tree regenerated with @tanstack/router-cli generate."
+}

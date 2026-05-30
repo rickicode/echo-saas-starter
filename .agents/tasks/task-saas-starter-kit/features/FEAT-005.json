@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-005",
+  "type": "chore",
+  "description": "Build, Deploy, and Documentation - Dockerfile (multi-stage), docker-compose.yml, complete Makefile, .gitignore, and final verification that go build/vet/test and frontend tsc/build all pass cleanly",
+  "status": "completed",
+  "steps": [
+    "Create Dockerfile: Multi-stage build. Stage 1 (frontend): node:22-alpine, copy ui/, npm ci, npm run build. Stage 2 (backend): golang:1.25-alpine, copy go.mod/go.sum, go mod download, copy all source + ui/dist from stage 1, go build -o /app cmd/server/main.go. Stage 3 (runtime): alpine:latest, copy binary, expose port 8080, ENTRYPOINT [\"/app\"].",
+    "Create docker-compose.yml: services for app (build ., ports 8080, env vars from .env, depends_on postgres), postgres (image postgres:16-alpine, volumes, environment for POSTGRES_USER/PASSWORD/DB), optional: adminer for DB management.",
+    "Update Makefile to be comprehensive: build (builds Go binary with embedded frontend), run, test (go test ./... -v), dev (concurrent), lint (go vet + golangci-lint run if available), clean, docker-build, docker-run, docker-compose-up, migrate, seed, frontend-build, frontend-dev.",
+    "Create .gitignore: Go binaries, ui/node_modules, ui/dist, .env, data/ (sqlite files), tmp/, vendor/ (if used), .DS_Store, *.exe.",
+    "Add basic Go tests: Create internal/config/config_test.go testing config loading. Create internal/database/factory_test.go testing URL scheme detection. These should pass with go test ./...",
+    "Run final verification: go build ./..., go vet ./..., go test ./..., cd ui && npx tsc --noEmit, cd ui && npm run build. All must exit 0 with zero errors and zero warnings.",
+    "Fix any compilation errors, type errors, or test failures found during verification."
+  ],
+  "acceptance_criteria": [
+    "go build ./... exits with code 0",
+    "go vet ./... exits with code 0",
+    "go test ./... exits with code 0 with all tests passing",
+    "cd ui && npx tsc --noEmit exits with code 0",
+    "cd ui && npm run build exits with code 0",
+    "Dockerfile exists with multi-stage build",
+    "docker-compose.yml exists with app + postgres services",
+    ".gitignore covers all generated/temporary files",
+    "Makefile has all specified targets"
+  ],
+  "verification": [
+    "cd /projects/sandbox/echo-saas-starter && go build ./...",
+    "cd /projects/sandbox/echo-saas-starter && go vet ./...",
+    "cd /projects/sandbox/echo-saas-starter && go test ./...",
+    "cd /projects/sandbox/echo-saas-starter/ui && npx tsc --noEmit",
+    "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
+  ],
+  "blocked_reason": null,
+  "findings": "All verification passed: go build, go vet, go test, tsc --noEmit, npm run build all exit 0. Config test required adding SetDefault for DATABASE_URL and PASETO_SECRET in config.go so viper's AutomaticEnv can detect them. SQLite in-memory tests work with both sqlite:// and file: URL schemes."
+}

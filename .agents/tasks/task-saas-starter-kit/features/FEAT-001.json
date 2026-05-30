@@ -1,0 +1,50 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Core Foundation - Go backend with Echo, plugin system architecture, configuration, database abstraction, middleware, go:embed, and frontend project initialization with TanStack Router + shadcn/ui + Tailwind CSS",
+  "status": "completed",
+  "steps": [
+    "Initialize Go module at /projects/sandbox/echo-saas-starter with 'go mod init echo-saas-starter'. Add dependencies: github.com/labstack/echo/v4, github.com/jackc/pgx/v5, modernc.org/sqlite, aidanwoods.dev/go-paseto, golang.org/x/crypto (for argon2id), github.com/spf13/viper, github.com/golang-migrate/migrate/v4, github.com/google/uuid.",
+    "Create internal/core/plugin.go: Define the Plugin interface with methods Name() string, Version() string, Init(cfg *config.Config, db database.DB) error, RegisterRoutes(g *echo.Group), Migrate(db database.DB) error, Shutdown() error. Define optional hook interfaces: StartupHook (OnStartup()), MiddlewareHook (OnMiddleware(*echo.Echo)).",
+    "Create internal/core/manager.go: PluginManager struct that handles registration (Register(Plugin)), initialization order, route mounting under /api/v1/<plugin-name>, migration execution for all plugins, and graceful shutdown in reverse order.",
+    "Create internal/config/config.go: Config struct with fields DatabaseURL, PasetoSecret, ServerPort, ServerHost, LogLevel, CorsOrigins. Load from environment variables first, then optional config.yaml via viper. Validate required fields.",
+    "Create internal/core/database.go: Define DB interface with methods Exec(ctx, query, args...) error, Query(ctx, query, args...) (*Rows, error), QueryRow(ctx, query, args...) Row, Close() error, and GetDB() interface{} for raw access. Define Row and Rows interfaces for scanning.",
+    "Create internal/database/postgres.go: PostgreSQL implementation of DB interface using pgx/v5 connection pool. Connect using DATABASE_URL.",
+    "Create internal/database/sqlite.go: SQLite3 implementation of DB interface using modernc.org/sqlite with WAL mode enabled. Parse file path from DATABASE_URL (sqlite:// or file: scheme).",
+    "Create internal/database/factory.go: NewDB(databaseURL string) function that auto-detects scheme (postgres://, postgresql:// -> PostgreSQL; sqlite://, file: -> SQLite) and returns appropriate DB implementation.",
+    "Create internal/core/middleware.go: Functions for CORS (configurable origins), request logging (method, path, status, latency), panic recovery, request ID generation (UUID in X-Request-ID header). Each returns echo.MiddlewareFunc.",
+    "Create internal/server/server.go: Server struct with NewServer(cfg, db, pluginManager) constructor. Methods: Start() to initialize Echo, apply middleware, mount plugin routes, serve embedded SPA for non-API routes; Shutdown(ctx) for graceful stop.",
+    "Create internal/embed/embed.go: Use go:embed directive to embed ui/dist/ directory. Create SPAHandler that serves static files and falls back to index.html for client-side routing. Note: use a build tag or conditional check so it compiles even without ui/dist.",
+    "Create cmd/server/main.go: Load config, initialize DB via factory, create plugin manager, register all plugins from registry, run migrations, start server. Handle graceful shutdown on SIGINT/SIGTERM.",
+    "Create internal/plugins/registry.go: RegisterAll(manager *core.PluginManager) function that imports and registers all plugin constructors. Initially empty (plugins added in later features).",
+    "Initialize frontend at ui/: Run 'npm create vite@latest . -- --template react-ts' in ui/ directory. Install TanStack Router (@tanstack/react-router, @tanstack/router-plugin), shadcn/ui dependencies (tailwindcss, postcss, autoprefixer, @radix-ui/react-*, class-variance-authority, clsx, tailwind-merge, lucide-react). Configure tailwind.config.ts, postcss.config.js, vite.config.ts with TanStack Router plugin. Set up file-based routing in ui/src/routes/. Initialize shadcn with 'npx shadcn@latest init'. Create directory structure: ui/src/components/ui/, ui/src/lib/, ui/src/hooks/, ui/src/stores/, ui/src/plugins/.",
+    "Create ui/src/lib/api.ts: Axios or fetch-based HTTP client. Base URL /api/v1. Intercept requests to add Authorization: Bearer <token> header. Intercept 401 responses to attempt token refresh. On refresh failure, redirect to login. Export typed request methods (get, post, put, delete).",
+    "Create ui/src/lib/utils.ts: cn() utility function for tailwind class merging (clsx + tailwind-merge).",
+    "Create root route ui/src/routes/__root.tsx with TanStack Router, set up the root layout with Outlet.",
+    "Create .env.example at project root with: DATABASE_URL=sqlite://./data/app.db (and postgres example commented), PASETO_SECRET=your-secret-key-min-32-chars, SERVER_PORT=8080, SERVER_HOST=0.0.0.0, LOG_LEVEL=info, CORS_ORIGINS=*.",
+    "Create Makefile with targets: build (go build + frontend build), run (go run cmd/server/main.go), test (go test ./... + cd ui && npm test), dev (concurrent backend + frontend dev), lint (go vet + golangci-lint + cd ui && npm run lint), clean (remove binaries + ui/dist).",
+    "Create ui/package.json scripts: dev, build, preview, lint, test (vitest).",
+    "Ensure go build ./... passes and cd ui && npm run build passes."
+  ],
+  "acceptance_criteria": [
+    "go build ./... exits with code 0",
+    "go vet ./... exits with code 0",
+    "cd ui && npx tsc --noEmit exits with code 0",
+    "cd ui && npm run build exits with code 0",
+    "Plugin interface is defined with all required methods",
+    "Plugin manager handles registration and lifecycle",
+    "Database abstraction supports both PostgreSQL and SQLite with auto-detection",
+    "Configuration loads from environment variables",
+    "Echo server serves API routes under /api/v1/ and embedded SPA for all other routes",
+    "Frontend has TanStack Router with file-based routing configured",
+    "API client handles token injection and refresh"
+  ],
+  "verification": [
+    "cd /projects/sandbox/echo-saas-starter && go build ./...",
+    "cd /projects/sandbox/echo-saas-starter && go vet ./...",
+    "cd /projects/sandbox/echo-saas-starter/ui && npx tsc --noEmit",
+    "cd /projects/sandbox/echo-saas-starter/ui && npm run build"
+  ],
+  "blocked_reason": null,
+  "findings": "All verification commands pass: go build ./..., go vet ./..., npx tsc --noEmit, npm run build. TypeScript 6 has deprecated baseUrl/paths (TS5101 error) so path aliases are not used - import directly with relative paths. TanStack Router file-based routing generates routeTree.gen.ts automatically during vite build. Tailwind CSS v4 uses CSS-based configuration (@import 'tailwindcss') instead of tailwind.config.ts. The embed placeholder at internal/embed/dist/index.html ensures Go builds without the full frontend dist."
+}
